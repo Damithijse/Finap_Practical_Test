@@ -34,11 +34,9 @@ const LoginScreen = props => {
     value = await AsyncStorage.getItem('response');
     user = await AsyncStorage.getItem('loginData');
     loginData = JSON.parse(user);
-    //console.log(value, user, 'aa');
   };
   // -------------------------- setup Login Process ----------------------------------
   const setupLogin = async () => {
-    //console.log('working');
     if (user !== null) {
       if (inputEmail !== '') {
         if (inputPassword !== '') {

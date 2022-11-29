@@ -30,7 +30,6 @@ const SearchScreen = props => {
   const [selected, setSelected] = useState('');
   const [selectedCat, setSelectedCat] = useState('apple');
   const [searchTxt, setSearchTxt] = useState('');
-  const [loading, setLoading] = useState(true);
   const [filterModal, setfilterModal] = useState(false);
 
   // --------------------- Back Handlaing-----------------------

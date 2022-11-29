@@ -12,7 +12,6 @@ export const createAnNewAccount =
       await AsyncStorage.setItem('response', 'LOG');
       await AsyncStorage.setItem('loginData', JSON.stringify(logindata)).then(
         () => {
-          //console.log('Sucess');
           dispatch({
             type: 'SET_LOADING_STATE',
             payload: false,
@@ -33,7 +32,6 @@ export const createAnNewAccount =
         message: 'Something went wrong! try again',
         type: 'danger',
       });
-      //console.log(e);
       dispatch({
         type: 'SET_LOADING_STATE',
         payload: false,
@@ -67,7 +65,6 @@ export const updateAnNewAccount = loginData => async dispatch => {
       message: 'Something went wrong! try again',
       type: 'danger',
     });
-    //console.log(e);
     dispatch({
       type: 'SET_LOADING_STATE',
       payload: false,

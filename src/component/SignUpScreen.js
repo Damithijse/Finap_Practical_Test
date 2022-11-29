@@ -4,7 +4,6 @@ import {
   Image,
   Text,
   TextInput,
-  ScrollView,
   TouchableOpacity,
   BackHandler,
 } from 'react-native';
@@ -36,7 +35,6 @@ const SignUpScreen = props => {
   const checkPassword = () => {
     if (password !== '' && password === confirmpassword) {
       setIsMatchPassword(true);
-      //console.log('Password Matching');
     } else {
       setIsMatchPassword(false);
       showMessage({
@@ -61,7 +59,6 @@ const SignUpScreen = props => {
   }, []);
   // --------------------------------- email validation process---------------------
   const validate = text => {
-    //console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
       return false;

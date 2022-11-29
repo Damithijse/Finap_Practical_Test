@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Image, Text, Alert, BackHandler} from 'react-native';
+import {View, Image, Text, BackHandler} from 'react-native';
 import {connect} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 

@@ -18,8 +18,6 @@ import userImg from '../assets/icons8-male-user-52.png';
 
 import emailImg from '../assets/icons8-circled-envelope-100.png';
 import {showMessage} from 'react-native-flash-message';
-import passwordImg from '../assets/icons8-secure-100.png';
-import edit from '../assets/icons8-edit-96.png';
 let value;
 let user;
 let loginData;
