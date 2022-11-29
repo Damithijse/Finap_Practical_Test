@@ -17,6 +17,7 @@ This project aims to be a strong foundation for react-native applications. It pr
 + react-native-responsive-screen
 + react-native-modal
 + react-native-flash-message
++ AsyncStorage LocalStorage
 
 ## Folder structure
 
