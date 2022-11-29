@@ -1,7 +1,7 @@
-const APIKEY = '3b15b415f42940f59b969756416c5486';
+const APIKEY = '8867aa7589884af496c6cfd87793d3fa';
 
 export const getTopHedlines = page => async dispatch => {
-  console.log('working', page);
+  //console.log('working', page);
   const options = {
     method: 'GET',
   };
@@ -11,7 +11,7 @@ export const getTopHedlines = page => async dispatch => {
   )
     .then(response => response.json())
     .then(json => {
-      console.log(json.articles, 'nnn');
+      //console.log(json.articles, 'nnn');
       dispatch({
         type: 'SET_PAGE_COUNT',
         payload: page + 1,
@@ -57,14 +57,14 @@ export const getSearchData = (text, page) => async dispatch => {
   const options = {
     method: 'GET',
   };
-  console.log(text, 'textt');
+  //console.log(text, 'textt');
   fetch(
     `https://newsapi.org/v2/everything?q=${text}&page=${page}&pageSize=10&apiKey=${APIKEY}`,
     options,
   )
     .then(response => response.json())
     .then(json => {
-      console.log(json.articles, 'll');
+      //console.log(json.articles, 'll');
       dispatch({
         type: 'SET_PAGE_COUNT',
         payload: page + 1,
@@ -84,14 +84,14 @@ export const getEverything = (cat, page) => async dispatch => {
   const options = {
     method: 'GET',
   };
-  console.log(page);
+  //console.log(page);
   fetch(
     `https://newsapi.org/v2/everything?q=${cat}&page=${page}&pageSize=10&apiKey=${APIKEY}`,
     options,
   )
     .then(response => response.json())
     .then(json => {
-      console.log(json.articles, 'll');
+      //console.log(json.articles, 'll');
       dispatch({
         type: 'SET_PAGE_COUNT',
         payload: page + 1,

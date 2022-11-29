@@ -5,7 +5,9 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  BackHandler,
   FlatList,
+  Alert,
   Text,
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -13,13 +15,13 @@ import {useNavigation} from '@react-navigation/native';
 import {
   getTopHedlines,
   changePageCount,
+  changeComponent,
   setLoadingState,
   getEverything,
   setNewsItem,
 } from '../actions/HomePageActions';
 
 import Style from '../styles/HomeScreenStyles';
-import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
 import search from '../assets/icons8-search-96.png';
 import next from '../assets/icons8-right-96.png';
@@ -31,8 +33,27 @@ const HomeScreen = props => {
   const [selected, setSelected] = useState('');
   const [selectedCat, setSelectedCat] = useState('apple');
 
-  //eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => props.getEverything(selectedCat, props.pageCount), []);
+  useEffect(() => {
+    props.getEverything(selectedCat, props.pageCount);
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   // --------------------------------flatList load more --------------------------------
   const renderFooter = () => {
@@ -114,9 +135,13 @@ const HomeScreen = props => {
 
           <Image source={search} style={Style.searchIcon} />
         </TouchableOpacity>
-        <View style={Style.profileContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            props.changeComponent('PROFILE');
+          }}
+          style={Style.profileContainer}>
           <Image source={profile} style={Style.profileIcon} />
-        </View>
+        </TouchableOpacity>
       </View>
       {/*-------------------------------------- Headlines------------------------------*/}
       <View style={Style.headlineContainer}>
@@ -234,6 +259,7 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   getTopHedlines,
   setLoadingState,
+  changeComponent,
   setNewsItem,
   changePageCount,
   getEverything,

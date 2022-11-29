@@ -16,7 +16,7 @@ const LoadingScreen = props => {
     try {
       value = await AsyncStorage.getItem('response');
     } catch (e) {
-      console.log('Something went wrong', e);
+      //console.log('Something went wrong', e);
     }
     setTimeout(() => {
       if (value === 'LOG') {

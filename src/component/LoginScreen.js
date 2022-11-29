@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   AsyncStorage,
+  Alert,
+  BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -32,11 +34,11 @@ const LoginScreen = props => {
     value = await AsyncStorage.getItem('response');
     user = await AsyncStorage.getItem('loginData');
     loginData = JSON.parse(user);
-    console.log(value, user, 'aa');
+    //console.log(value, user, 'aa');
   };
   // -------------------------- setup Login Process ----------------------------------
   const setupLogin = async () => {
-    console.log('working');
+    //console.log('working');
     if (user !== null) {
       if (inputEmail !== '') {
         if (inputPassword !== '') {
@@ -79,6 +81,27 @@ const LoginScreen = props => {
       });
     }
   };
+  //----------------------------Back Handler ------------------------------
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('Hold on!', 'Are you sure you want to Exit?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+          style: 'cancel',
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
   return (
     <View style={Style.mainContainer}>
       <View style={Style.headContainer}>

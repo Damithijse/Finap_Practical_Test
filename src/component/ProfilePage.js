@@ -6,6 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
@@ -49,6 +50,20 @@ const ProfileScreen = props => {
       });
     }
   };
+  // ------------------ BackHandler-------------------------------------
+  useEffect(() => {
+    const backAction = () => {
+      props.changeComponent('HOME');
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View style={Style.mainContainer}>

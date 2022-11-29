@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View, Image, Text} from 'react-native';
+import {View, Image, Text, Alert, BackHandler} from 'react-native';
 import {connect} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 
@@ -8,6 +8,19 @@ import Style from '../styles/LoginScreenStyle';
 
 const NewsDetailsScreen = props => {
   const navigation = useNavigation();
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
   return (
     <View style={Style.mainContainer}>
       <View style={Style.backGroundImg}>
@@ -23,13 +36,17 @@ const NewsDetailsScreen = props => {
             <Text>{props.newsItem.description}</Text>
           </View>
           <View style={Style.titleTxt}>
-            <Text numberOfLines={10} style={{}}>
+            <Text numberOfLines={10}>
               {props.newsItem.content.slice(0, 3000)}
             </Text>
           </View>
         </View>
         <View style={Style.mainView}>
-          <Text style={Style.dateTxt}>{props.newsItem.publishedAt}</Text>
+          <Text style={Style.dateTxt}>
+            {props.newsItem.publishedAt !== null
+              ? props.newsItem.publishedAt
+              : ''}
+          </Text>
           <Text numberOfLines={3} style={Style.desTxt}>
             {props.newsItem.description}
           </Text>

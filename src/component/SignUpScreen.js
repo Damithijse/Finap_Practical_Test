@@ -6,16 +6,13 @@ import {
   TextInput,
   ScrollView,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import {showMessage} from 'react-native-flash-message';
 import {connect} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {createAnNewAccount} from '../actions/LoginScreenAction';
 import Style from '../styles/LoginScreenStyle';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 
 import logo from '../assets/logo.png';
 import user from '../assets/icons8-male-user-52.png';
@@ -39,7 +36,7 @@ const SignUpScreen = props => {
   const checkPassword = () => {
     if (password !== '' && password === confirmpassword) {
       setIsMatchPassword(true);
-      console.log('Password Matching');
+      //console.log('Password Matching');
     } else {
       setIsMatchPassword(false);
       showMessage({
@@ -48,9 +45,23 @@ const SignUpScreen = props => {
       });
     }
   };
+  // ------------------------------BackHandler-----------------------------
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
   // --------------------------------- email validation process---------------------
   const validate = text => {
-    console.log(text);
+    //console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
       return false;

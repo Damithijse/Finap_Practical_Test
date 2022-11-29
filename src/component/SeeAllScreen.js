@@ -1,34 +1,39 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
-  Image,
-  AsyncStorage,
-  ActivityIndicator,
-  TextInput,
   ImageBackground,
-  ScrollView,
   TouchableOpacity,
   FlatList,
   Text,
+  BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
-import Modal from 'react-native-modal';
+
 import {useNavigation} from '@react-navigation/native';
-import {getTopHedlines, changePageCount} from '../actions/HomePageActions';
-import Style from '../styles/HomeScreenStyles';
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import search from '../assets/icons8-search-96.png';
-import filter from '../assets/icons8-filter-96.png';
-import close from '../assets/icons8-macos-close-96.png';
-import {getEverything} from '../actions/HomePageActions';
+  getTopHedlines,
+  changePageCount,
+  setNewsItem,
+  getEverything,
+} from '../actions/HomePageActions';
+import Style from '../styles/HomeScreenStyles';
 
 const SearchScreen = props => {
   const navigation = useNavigation();
   const flatListRef = React.useRef();
-  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   const renderFooter = () => {
     return (
@@ -45,18 +50,30 @@ const SearchScreen = props => {
       </View>
     );
   };
+  // --------------------------------convert to Date --------------------------------
+  const setDate = str => {
+    var date = new Date(str),
+      mnth = ('0' + (date.getMonth() + 1)).slice(-2),
+      day = ('0' + date.getDate()).slice(-2);
+    return [date.getFullYear(), mnth, day].join('-');
+  };
   const itemSeparatorView = () => {
     return <View style={Style.itemSeparateContainer} />;
   };
 
   const renderItem = ({item}) => (
-    <View style={Style.itemContainer}>
+    <TouchableOpacity
+      onPress={() => {
+        props.setNewsItem(item);
+        navigation.navigate('Details');
+      }}
+      style={Style.itemContainer}>
       <ImageBackground
         source={{
           uri:
             item.urlToImage !== null
               ? item.urlToImage
-              : 'https://st4.depositphotos.com/2409585/38816/v/600/depositphotos_388160030-stock-video-world-news-background-loop-digital.jpg',
+              : 'http://blavatnikfoundation.org/wp-content/uploads/2020/06/covid-news-img.jpg',
         }}
         resizeMode="stretch"
         imageStyle={Style.itemImgContainer}
@@ -68,12 +85,14 @@ const SearchScreen = props => {
               {item.description !== null ? item.author : undefined}
             </Text>
             <Text style={Style.itemDesTxt}>
-              {item.publishedAt !== null ? item.publishedAt : undefined}
+              {item.publishedAt !== null
+                ? setDate(item.publishedAt)
+                : undefined}
             </Text>
           </View>
         </View>
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
   return (
     <View style={Style.mainContainer}>
@@ -109,5 +128,6 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   getTopHedlines,
   changePageCount,
+  setNewsItem,
   getEverything,
 })(SearchScreen);

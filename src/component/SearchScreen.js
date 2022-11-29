@@ -2,14 +2,12 @@ import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Image,
-  AsyncStorage,
-  ActivityIndicator,
   TextInput,
   ImageBackground,
-  ScrollView,
   TouchableOpacity,
   FlatList,
   Text,
+  BackHandler,
 } from 'react-native';
 import {connect} from 'react-redux';
 import Modal from 'react-native-modal';
@@ -19,12 +17,9 @@ import {
   changePageCount,
   getSearchData,
   getEverything,
+  setNewsItem,
 } from '../actions/HomePageActions';
 import Style from '../styles/HomeScreenStyles';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import search from '../assets/icons8-search-96.png';
 import filter from '../assets/icons8-filter-96.png';
 import close from '../assets/icons8-macos-close-96.png';
@@ -38,130 +33,86 @@ const SearchScreen = props => {
   const [loading, setLoading] = useState(true);
   const [filterModal, setfilterModal] = useState(false);
 
+  // --------------------- Back Handlaing-----------------------
+  useEffect(() => {
+    const backAction = () => {
+      navigation.goBack();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
   const renderFooter = () => {
     return (
-      <View
-        style={{
-          padding: 10,
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'row',
-        }}>
+      <View style={Style.loadMoreContainer}>
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => {
             props.getEverything(selectedCat, props.pageCount);
             flatListRef.current.scrollToOffset({animated: true, offset: 0});
           }}
-          style={{
-            padding: 10,
-            backgroundColor: '#FF3A44',
-            borderRadius: 4,
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text style={{color: 'white', fontSize: 15, textAlign: 'center'}}>
-            Load More
-          </Text>
+          style={Style.loadMoreBtn}>
+          <Text style={Style.loadMoreBtnTxt}>Load More</Text>
         </TouchableOpacity>
       </View>
     );
   };
   const itemSeparatorView = () => {
-    return (
-      <View
-        style={{
-          height: 0.5,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
-    );
+    return <View style={Style.itemSeparateContainer} />;
+  };
+
+  // --------------------------------convert to Date --------------------------------
+  const setDate = str => {
+    var date = new Date(str),
+      mnth = ('0' + (date.getMonth() + 1)).slice(-2),
+      day = ('0' + date.getDate()).slice(-2);
+    return [date.getFullYear(), mnth, day].join('-');
   };
 
   const renderItem = ({item}) => (
-    <View
-      style={{
-        width: wp(90),
-        height: hp(20),
-        borderRadius: 20,
-        paddingBottom: 10,
-      }}>
+    <TouchableOpacity
+      onPress={() => {
+        props.setNewsItem(item);
+        navigation.navigate('Details');
+      }}
+      style={Style.itemContainer}>
       <ImageBackground
         source={{
           uri:
             item.urlToImage !== null
               ? item.urlToImage
-              : 'https://st4.depositphotos.com/2409585/38816/v/600/depositphotos_388160030-stock-video-world-news-background-loop-digital.jpg',
+              : 'http://blavatnikfoundation.org/wp-content/uploads/2020/06/covid-news-img.jpg',
         }}
         resizeMode="stretch"
-        imageStyle={{borderRadius: 20}}
-        style={{
-          width: '100%',
-          height: '100%',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            width: '80%',
-            height: '100%',
-            justifyContent: 'space-around',
-          }}>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 15,
-              fontWeight: 'bold',
-              marginTop: 3,
-            }}>
-            {item.title}
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '100%',
-              justifyContent: 'space-around',
-            }}>
-            <Text
-              numberOfLines={2}
-              style={{
-                color: 'white',
-                width: '40%',
-                fontSize: 11,
-              }}>
+        imageStyle={Style.itemImgContainer}
+        style={Style.itemImg}>
+        <View style={Style.titleContainer}>
+          <Text style={Style.itemTxt}>{item.title}</Text>
+          <View style={Style.itemDesContainer}>
+            <Text numberOfLines={2} style={Style.itemDesTxt}>
               {item.description !== null ? item.author : undefined}
             </Text>
-            <Text style={{color: 'white', fontSize: 11}}>
-              {item.publishedAt !== null ? item.publishedAt : undefined}
+            <Text style={Style.itemDesTxt}>
+              {item.publishedAt !== null
+                ? setDate(item.publishedAt)
+                : undefined}
             </Text>
           </View>
         </View>
       </ImageBackground>
-    </View>
+    </TouchableOpacity>
   );
   return (
     <View style={Style.mainContainer}>
-      <View
-        style={{
-          width: '100%',
-          height: hp('10'),
-          justifyContent: 'center',
-
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            width: '90%',
-            borderWidth: 1,
-            borderColor: '#CEC8C8',
-            height: 45,
-            justifyContent: 'space-around',
-            borderRadius: 20,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <View style={{width: '50%'}}>
+      <View style={Style.searchMainContainer}>
+        <View style={Style.searchBarView}>
+          <View style={Style.searchSubContainer}>
             <TextInput
               placeholder={'Search ...'}
               placeholderTextColor="#CEC8C8"
@@ -173,47 +124,27 @@ const SearchScreen = props => {
               onEndEditing={() => {
                 props.getSearchData(searchTxt, props.pageCount);
               }}
-              style={{color: 'black', fontSize: 15}}
+              style={Style.searchTxtInput}
             />
           </View>
 
-          <Image
-            source={search}
-            style={{width: 30, height: 30, marginLeft: '5%'}}
-          />
+          <Image source={search} style={Style.searchIcon} />
         </View>
       </View>
       <TouchableOpacity
         onPress={() => {
           setfilterModal(true);
         }}
-        style={{width: '100%', justifyContent: 'center'}}>
-        <View
-          style={{
-            width: wp(25),
-            height: hp(6),
-            marginBottom: 10,
-            alignItems: 'center',
-            justifyContent: 'space-around',
-            flexDirection: 'row',
-            borderRadius: 20,
-            marginLeft: '5%',
-            backgroundColor: '#FF3A44',
-          }}>
-          <Image
-            source={filter}
-            style={{width: 30, height: 30, marginLeft: '5%'}}
-          />
-          <Text style={{width: '50%', color: 'white'}}>Filter</Text>
+        style={Style.modelCloseView}>
+        <View style={Style.filterView}>
+          <Image source={filter} style={Style.searchIcon} />
+          <Text style={Style.filterTxt}>Filter</Text>
         </View>
       </TouchableOpacity>
       <FlatList
         ref={flatListRef}
-        style={{
-          width: '100%',
-          marginTop: '1%',
-        }}
-        contentContainerStyle={{alignItems: 'center', paddingBottom: hp(25)}}
+        style={Style.flatListStyle}
+        contentContainerStyle={Style.flatListContainer}
         data={props.searchData}
         renderItem={renderItem}
         keyExtractor={item => item.id}
@@ -225,47 +156,24 @@ const SearchScreen = props => {
       <Modal
         isVisible={filterModal}
         backdropColor="black"
-        style={{
-          justifyContent: 'flex-end',
-          margin: 0,
-          alignItems: 'center',
-        }}
+        style={Style.modelView}
         animationInTiming={1500}
         animationOutTiming={1200}
         backdropTransitionInTiming={1000}
         backdropTransitionOutTiming={1000}>
-        <View
-          style={{
-            width: wp('100%'),
-            height: hp(30),
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-          }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: '80%',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{fontSize: 19, fontWeight: 'bold'}}>Filter</Text>
+        <View style={Style.modalMainContainer}>
+          <View style={Style.modalSubView}>
+            <Text style={Style.subTopicTxt}>Filter</Text>
             <TouchableOpacity
               onPress={() => {
                 setfilterModal(false);
               }}>
-              <Image source={close} style={{width: 40, height: 40}} />
+              <Image source={close} style={Style.closeIcon} />
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              width: '80%',
-              marginTop: 10,
-            }}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>Sort By</Text>
-            <View style={{flexDirection: 'row', marginTop: 10}}>
+          <View style={Style.sortByView}>
+            <Text style={Style.sortTxt}>Sort By</Text>
+            <View style={Style.catSelectView}>
               {props.categories.slice(0, 3).map(item => {
                 return (
                   <TouchableOpacity
@@ -277,16 +185,13 @@ const SearchScreen = props => {
                         setfilterModal(false);
                       }, 1000);
                     }}
-                    style={{
-                      width: 100,
-                      height: 40,
-                      backgroundColor:
-                        selected === item.title ? '#FF3A44' : 'white',
-                      alignItems: 'center',
-                      marginRight: 10,
-                      borderRadius: 20,
-                      justifyContent: 'center',
-                    }}>
+                    style={[
+                      Style.catBtn,
+                      {
+                        backgroundColor:
+                          selected === item.title ? '#FF3A44' : 'white',
+                      },
+                    ]}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -298,13 +203,7 @@ const SearchScreen = props => {
                 );
               })}
             </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginTop: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
+            <View style={Style.catSelectView}>
               {props.categories.slice(3, 5).map(item => {
                 return (
                   <TouchableOpacity
@@ -316,16 +215,13 @@ const SearchScreen = props => {
                         setfilterModal(false);
                       }, 1000);
                     }}
-                    style={{
-                      width: 100,
-                      height: 40,
-                      backgroundColor:
-                        selected === item.title ? '#FF3A44' : 'white',
-                      alignItems: 'center',
-                      marginRight: 10,
-                      borderRadius: 20,
-                      justifyContent: 'center',
-                    }}>
+                    style={[
+                      Style.catBtn,
+                      {
+                        backgroundColor:
+                          selected === item.title ? '#FF3A44' : 'white',
+                      },
+                    ]}>
                     <Text
                       style={{
                         fontSize: 14,
@@ -358,6 +254,7 @@ const mapStateToProps = state => {
 export default connect(mapStateToProps, {
   getTopHedlines,
   changePageCount,
+  setNewsItem,
   getSearchData,
   getEverything,
 })(SearchScreen);

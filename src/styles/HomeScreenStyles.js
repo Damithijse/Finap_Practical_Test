@@ -205,4 +205,84 @@ module.exports = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: hp(25),
   },
+  searchMainContainer: {
+    width: '100%',
+    height: hp('10'),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchBarView: {
+    width: '90%',
+    borderWidth: 1,
+    borderColor: '#CEC8C8',
+    height: 45,
+    justifyContent: 'space-around',
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchTxtInput: {
+    color: 'black',
+    fontSize: 15,
+  },
+  modelCloseView: {
+    width: '100%',
+    justifyContent: 'center',
+  },
+  filterView: {
+    width: wp(25),
+    height: hp(6),
+    marginBottom: 10,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    borderRadius: 20,
+    marginLeft: '5%',
+    backgroundColor: '#FF3A44',
+  },
+  filterTxt: {
+    width: '50%',
+    color: 'white',
+  },
+  modelView: {
+    justifyContent: 'flex-end',
+    margin: 0,
+    alignItems: 'center',
+  },
+  modalMainContainer: {
+    width: wp('100%'),
+    height: hp(30),
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  modalSubView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '80%',
+    justifyContent: 'space-between',
+  },
+  subTopicTxt: {
+    fontSize: 19,
+    fontWeight: 'bold',
+  },
+  closeIcon: {
+    width: 40,
+    height: 40,
+  },
+  sortByView: {
+    width: '80%',
+    marginTop: 10,
+  },
+  sortTxt: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  catSelectView: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+
 });
