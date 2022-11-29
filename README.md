@@ -25,7 +25,7 @@ This project aims to be a strong foundation for react-native applications. It pr
 - src: This folder is the main container of all the code inside your application.
 - actions: This folder contains all actions that can be dispatched to redux.
 - assets: Asset folder to store all images, vectors, etc.
-- components: Folder to store any common component that you use through your app (such as a generic button)
+- components: Folder to store any common component and screens that you use through your app (such as a footer)
 - reducers: This folder should have all your reducers, and expose the combined result using its index.js
 - App.js: Main component that starts your whole app.
 - index.js: Entry point of your application as per React-Native standards.
